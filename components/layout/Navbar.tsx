@@ -5,28 +5,26 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export function Navbar() {
   return (
-    <header className="border-b bg-white/80 backdrop-blur">
-      <div className="section-container flex items-center justify-between py-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
-            OY
-          </span>
-          <span className="text-xl font-semibold tracking-tight">OnlyYums</span>
+    <header className="border-b border-border/20 bg-background/50 backdrop-blur-xl sticky top-0 z-50">
+      <div className="section-container flex items-center justify-between py-3">
+        <Link href="/" className="font-semibold tracking-tight hover:opacity-70 transition-opacity">
+          <span className="text-foreground">Only</span>
+          <span className="text-primary">Yums</span>
         </Link>
 
-        <nav className="flex items-center gap-6 text-sm text-muted-foreground">
-          <Link href="/cities" className="hover:text-foreground">
-            Cities
+        <nav className="flex items-center gap-8 text-xs font-medium">
+          <Link href="/cities" className="text-muted-foreground hover:text-foreground transition-colors">
+            CITIES
           </Link>
           <SignedIn>
-            <Link href="/dashboard" className="hover:text-foreground">
-              Dashboard
+            <Link href="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
+              DASHBOARD
             </Link>
           </SignedIn>
 
           <SignedOut>
-            <Link href="/sign-in" className="btn-secondary text-xs">
-              Sign In
+            <Link href="/sign-in" className="text-muted-foreground hover:text-foreground transition-colors">
+              SIGN IN
             </Link>
           </SignedOut>
 

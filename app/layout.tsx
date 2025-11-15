@@ -3,10 +3,76 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "OnlyYums",
-  description: "Discover the best food places across top US cities.",
+  title: "OnlyYums - Discover Curated Food Spots Across Top US Cities",
+  description:
+    "OnlyYums finds the best restaurants, cafes, and food spots worth visiting. Curated recommendations from our members—no algorithm, no noise. Explore cities and discover hidden gems.",
+  keywords: [
+    "restaurants",
+    "food discovery",
+    "curated dining",
+    "food recommendations",
+    "best restaurants",
+    "food spots",
+    "dining guide",
+    "local restaurants",
+    "food lovers",
+  ],
+  authors: [{ name: "OnlyYums" }],
+  creator: "OnlyYums",
+  publisher: "OnlyYums",
+  formatDetection: {
+    email: false,
+    telephone: false,
+    address: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://onlyyums.com",
+    siteName: "OnlyYums",
+    title: "OnlyYums - Discover Curated Food Spots",
+    description:
+      "Find the best restaurants and food spots across top US cities. Curated by our community of food lovers.",
+    images: [
+      {
+        url: "https://onlyyums.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "OnlyYums - Curated Food Discovery",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OnlyYums - Discover Curated Food Spots",
+    description:
+      "Find the best restaurants and food spots across top US cities. Curated by our community of food lovers.",
+    creator: "@onlyyums",
+    images: ["https://onlyyums.com/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  verification: {
+    google: "your-google-site-verification-code",
+  },
+  alternates: {
+    canonical: "https://onlyyums.com",
+  },
 };
 
 export default function RootLayout({
@@ -23,12 +89,7 @@ export default function RootLayout({
 
             <main className="flex-1">{children}</main>
 
-            <footer className="border-t bg-white/80">
-              <div className="section-container flex items-center justify-between py-6 text-xs text-muted-foreground">
-                <span>© {new Date().getFullYear()} OnlyYums</span>
-                <span>Discover the best bites in every city.</span>
-              </div>
-            </footer>
+            <Footer />
           </div>
         </body>
       </html>
