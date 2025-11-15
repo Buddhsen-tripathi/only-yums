@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
@@ -7,9 +8,9 @@ export function Navbar() {
   return (
     <header className="border-b border-border/20 bg-background/50 backdrop-blur-xl sticky top-0 z-50">
       <div className="section-container flex items-center justify-between py-3">
-        <Link href="/" className="font-semibold tracking-tight hover:opacity-70 transition-opacity">
-          <span className="text-foreground">Only</span>
-          <span className="text-primary">Yums</span>
+        <Link href="/" className="hover:opacity-80 transition-opacity inline-flex items-center">
+          <Image src="/logo.png" alt="OnlyYums" width={140} height={32} className="h-8 w-auto" priority />
+          <span className="sr-only">OnlyYums</span>
         </Link>
 
         <nav className="flex items-center gap-8 text-xs font-medium">

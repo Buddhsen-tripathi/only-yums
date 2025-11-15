@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -7,10 +8,10 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="font-semibold tracking-tight">
-              <span className="text-foreground">Only</span>
-              <span className="text-primary">Yums</span>
-            </div>
+            <Link href="/" className="inline-flex items-center hover:opacity-80 transition-opacity">
+              <Image src="/logo.png" alt="OnlyYums" width={140} height={32} className="h-8 w-auto" />
+              <span className="sr-only">OnlyYums</span>
+            </Link>
             <p className="text-sm text-muted-foreground">
               Discover the best food, curated for you.
             </p>
