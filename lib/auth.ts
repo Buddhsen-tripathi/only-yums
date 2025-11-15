@@ -11,7 +11,7 @@ export interface AppUser {
 }
 
 export async function getOptionalUser(): Promise<AppUser | null> {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return null;
 
   const user = await currentUser();

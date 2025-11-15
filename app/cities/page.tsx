@@ -6,16 +6,23 @@ export const dynamic = "force-dynamic";
 
 export default async function CitiesPage() {
   const supabase = supabaseServerClient();
-  const { data, error } = await supabase
-    .from("cities")
-    .select("id, name, slug, state, country, cover_image_url, created_at, updated_at")
-    .order("name", { ascending: true });
+  
+  let cities: City[] = [];
 
-  if (error) {
-    console.error("Error loading cities", error);
+  try {
+    const { data, error } = await supabase
+      .from("cities")
+      .select("id, name, slug, state, country, cover_image_url, created_at, updated_at")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Error loading cities", error);
+    } else {
+      cities = (data ?? []) as City[];
+    }
+  } catch (error) {
+    console.error("Error loading cities page:", error);
   }
-
-  const cities = (data ?? []) as City[];
 
   return (
     <div className="section-container space-y-6">

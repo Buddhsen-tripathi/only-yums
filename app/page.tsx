@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { supabaseServerClient } from "@/lib/supabase";
 import type { City, Place } from "@/lib/types";
 import { CityGrid } from "@/components/cities/CityGrid";
@@ -8,23 +9,39 @@ export const dynamic = "force-dynamic";
 export default async function LandingPage() {
   const supabase = supabaseServerClient();
 
-  const [{ data: citiesData }, { data: placesData }] = await Promise.all([
-    supabase
-      .from("cities")
-      .select("id, name, slug, state, country, cover_image_url, created_at, updated_at")
-      .limit(3),
-    supabase
-      .from("places")
-      .select(
-        "id, city_id, name, slug, short_description, full_description, address, website_url, price_level, avg_rating, cover_image_url, is_featured, created_at, updated_at",
-      )
-      .eq("is_featured", true)
-      .order("avg_rating", { ascending: false })
-      .limit(6),
-  ]);
+  let cities: City[] = [];
+  let featuredPlaces: Place[] = [];
 
-  const cities = (citiesData ?? []) as City[];
-  const featuredPlaces = (placesData ?? []) as Place[];
+  try {
+    const [{ data: citiesData, error: citiesError }, { data: placesData, error: placesError }] = await Promise.all([
+      supabase
+        .from("cities")
+        .select("id, name, slug, state, country, cover_image_url, created_at, updated_at")
+        .limit(3),
+      supabase
+        .from("places")
+        .select(
+          "id, city_id, name, slug, short_description, full_description, address, website_url, price_level, avg_rating, cover_image_url, is_featured, created_at, updated_at",
+        )
+        .eq("is_featured", true)
+        .order("avg_rating", { ascending: false })
+        .limit(6),
+    ]);
+
+    if (citiesError) {
+      console.error("Error loading cities:", citiesError);
+    } else {
+      cities = (citiesData ?? []) as City[];
+    }
+
+    if (placesError) {
+      console.error("Error loading featured places:", placesError);
+    } else {
+      featuredPlaces = (placesData ?? []) as Place[];
+    }
+  } catch (error) {
+    console.error("Error loading landing page data:", error);
+  }
 
   return (
     <div className="space-y-16">
@@ -44,12 +61,12 @@ export default async function LandingPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <a href="/cities" className="btn-primary">
+            <Link href="/cities" className="btn-primary">
               Explore cities
-            </a>
-            <a href="/sign-in" className="btn-secondary">
+            </Link>
+            <Link href="/sign-in" className="btn-secondary">
               Sign in to save favorites
-            </a>
+            </Link>
           </div>
           <p className="text-xs text-muted-foreground">
             Built for food-obsessed locals, travelers, and late-night seekers.
@@ -90,9 +107,9 @@ export default async function LandingPage() {
               Start with the cities our members are buzzing about.
             </p>
           </div>
-          <a href="/cities" className="text-xs font-medium text-muted-foreground underline-offset-2 hover:underline">
+          <Link href="/cities" className="text-xs font-medium text-muted-foreground underline-offset-2 hover:underline">
             View all
-          </a>
+          </Link>
         </div>
         <CityGrid cities={cities} />
       </section>
@@ -104,12 +121,12 @@ export default async function LandingPage() {
               Trending this week
             </h2>
             <p className="text-sm text-muted-foreground">
-              Handpicked spots that OnlyYums members can’t stop talking about.
+              Handpicked spots that OnlyYums members can&apos;t stop talking about.
             </p>
           </div>
-          <a href="/cities" className="text-xs font-medium text-muted-foreground underline-offset-2 hover:underline">
+          <Link href="/cities" className="text-xs font-medium text-muted-foreground underline-offset-2 hover:underline">
             Browse by city
-          </a>
+          </Link>
         </div>
         <PlaceGrid places={featuredPlaces} />
       </section>

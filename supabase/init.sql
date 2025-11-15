@@ -1,7 +1,9 @@
--- OnlyYums Supabase schema
+-- OnlyYums Database Schema & Seed
 
+-- Create extension
 create extension if not exists "uuid-ossp";
 
+-- Cities table
 create table if not exists cities (
   id uuid primary key default uuid_generate_v4(),
   name text not null,
@@ -13,6 +15,7 @@ create table if not exists cities (
   updated_at timestamptz not null default now()
 );
 
+-- Places table
 create table if not exists places (
   id uuid primary key default uuid_generate_v4(),
   city_id uuid not null references cities(id) on delete cascade,
@@ -30,6 +33,7 @@ create table if not exists places (
   updated_at timestamptz not null default now()
 );
 
+-- Place images table
 create table if not exists place_images (
   id uuid primary key default uuid_generate_v4(),
   place_id uuid not null references places(id) on delete cascade,
@@ -38,6 +42,7 @@ create table if not exists place_images (
   sort_order int not null default 0
 );
 
+-- Users table
 create table if not exists users (
   id uuid primary key default uuid_generate_v4(),
   clerk_user_id text not null unique,
@@ -47,6 +52,7 @@ create table if not exists users (
   updated_at timestamptz not null default now()
 );
 
+-- Favorites table
 create table if not exists favorites (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references users(id) on delete cascade,
@@ -55,6 +61,7 @@ create table if not exists favorites (
   unique (user_id, place_id)
 );
 
+-- Submissions table
 create table if not exists submissions (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references users(id) on delete cascade,
@@ -66,18 +73,15 @@ create table if not exists submissions (
   updated_at timestamptz not null default now()
 );
 
--- Basic RLS setup (sketched)
-
+-- Row Level Security
 alter table users enable row level security;
 alter table favorites enable row level security;
 alter table submissions enable row level security;
 
--- Users: a Clerk-authenticated user can only see/update their own row
 create policy "Users can view own profile" on users
   for select
   using (clerk_user_id = auth.jwt()->>'sub');
 
--- Favorites: user can manage their own favorites
 create policy "Users can view own favorites" on favorites
   for select
   using (user_id in (select id from users where clerk_user_id = auth.jwt()->>'sub'));
@@ -90,7 +94,6 @@ create policy "Users can delete own favorites" on favorites
   for delete
   using (user_id in (select id from users where clerk_user_id = auth.jwt()->>'sub'));
 
--- Submissions: user can manage their own submissions; admins will use service role
 create policy "Users can view own submissions" on submissions
   for select
   using (user_id in (select id from users where clerk_user_id = auth.jwt()->>'sub'));
@@ -98,3 +101,40 @@ create policy "Users can view own submissions" on submissions
 create policy "Users can insert submissions" on submissions
   for insert
   with check (user_id in (select id from users where clerk_user_id = auth.jwt()->>'sub'));
+
+-- Seed data
+insert into cities (name, slug, state, country, cover_image_url)
+values
+  ('New York City', 'new-york-city', 'NY', 'United States', 'https://images.pexels.com/photos/140734/pexels-photo-140734.jpeg'),
+  ('Los Angeles', 'los-angeles', 'CA', 'United States', 'https://images.pexels.com/photos/462331/pexels-photo-462331.jpeg'),
+  ('Chicago', 'chicago', 'IL', 'United States', 'https://images.pexels.com/photos/417344/pexels-photo-417344.jpeg')
+  on conflict (slug) do nothing;
+
+insert into places (
+  city_id,
+  name,
+  slug,
+  short_description,
+  full_description,
+  address,
+  website_url,
+  price_level,
+  avg_rating,
+  cover_image_url,
+  is_featured
+)
+select
+  c.id,
+  'Midnight Slice',
+  'midnight-slice-nyc',
+  'Legendary late-night pizza spot in the heart of Manhattan.',
+  'A tiny counter-service shop serving foldable New York slices until 3AM. Crispy crust, perfect cheese-to-sauce ratio, and a cult following among service workers and industry folks.',
+  '123 W 3rd St, New York, NY',
+  'https://example.com',
+  '$$',
+  4.7,
+  'https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg',
+  true
+from cities c
+where c.slug = 'new-york-city'
+  on conflict (slug) do nothing;

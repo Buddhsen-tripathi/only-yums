@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # Supabase
 supabase/.temp
+
+# clerk configuration (can include secrets)
+/.clerk/
