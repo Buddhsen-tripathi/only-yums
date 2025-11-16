@@ -20,16 +20,16 @@ export default async function CityPage({ params }: CityPageProps) {
     }
 
     return (
-      <div className="min-h-screen bg-background">
+      <div className="section-container space-y-12">
         <CityHero city={city} />
 
-        <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
+        <section className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-lg font-semibold">Cuisines</h2>
-            <p className="text-sm text-muted-foreground">Vote for your top 3 in each category</p>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Trending cuisines</h2>
+            <p className="text-sm text-muted-foreground">Vote for your favorites and help rank the best spots.</p>
           </div>
           <CuisineLeaderboards cuisines={cuisines} leaderboards={leaderboards} places={places} cityId={city.id} />
-        </div>
+        </section>
       </div>
     );
   } catch (error) {
